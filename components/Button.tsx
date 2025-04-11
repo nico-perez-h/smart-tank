@@ -2,10 +2,10 @@ import { Pressable, Text, PressableProps } from "react-native";
 import React from "react";
 
 type ButtonProps = {
-  title: string; // El texto que va dentro del botón
-  variant?: "filled" | "outline"; // El tipo de estilo
-  className?: string; // Para agregar estilos personalizados si quieres
-} & PressableProps; // Hereda todas las props de un <Pressable />
+  title: string;
+  variant?: "filled" | "outline";
+  className?: string;
+} & PressableProps;
 
 const Button = ({
   title,
