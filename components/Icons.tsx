@@ -31,3 +31,7 @@ export const EyeOffIcon = (props: IconProps) => (
 export const HomeIcon = (props: IconProps) => (
   <Feather name="home" size={24} color="black" {...props} />
 );
+
+export const CheckIcon = (props: IconProps) => (
+  <Feather name="check" size={24} color="black" {...props} />
+);
