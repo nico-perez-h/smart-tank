@@ -7,12 +7,10 @@ type ButtonProps = {
   className?: string;
 } & PressableProps;
 
-const Button = ({
-  title,
-  variant = "filled",
-  className = "",
-  ...props
-}: ButtonProps) => {
+const Button = React.forwardRef<
+  React.ElementRef<typeof Pressable>,
+  ButtonProps
+>(({ title, variant = "filled", className = "", ...props }, ref) => {
   const baseStyle = "py-3 rounded-xl";
   const filledStyle = "bg-[#9CD5FF]";
   const outlineStyle = "bg-white border border-[#9CD5FF]";
@@ -23,6 +21,7 @@ const Button = ({
 
   return (
     <Pressable
+      ref={ref}
       className={`${baseStyle} ${
         variant === "filled" ? filledStyle : outlineStyle
       } ${className}`}
@@ -37,6 +36,9 @@ const Button = ({
       </Text>
     </Pressable>
   );
-};
+});
+
+// Evita warnings en devtools
+Button.displayName = "Button";
 
 export default Button;
