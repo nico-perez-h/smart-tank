@@ -5,6 +5,7 @@ import { MailIcon, LockIcon, EyeIcon, EyeOffIcon } from "@components/Icons";
 import Button from "@components/Button";
 import Input from "components/Input";
 import CheckBox from "@components/CheckBox";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { registerUser } from "@services/auth/register";
 
 const Register = () => {
@@ -12,8 +13,6 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [secondPassword, setSecondPassword] = useState("");
   const [keepLoggedIn, setKeepLoggedIn] = useState(false);
-
-  // Nuevos estados para ver/ocultar contraseñas
   const [showPassword, setShowPassword] = useState(false);
   const [showSecondPassword, setShowSecondPassword] = useState(false);
 
@@ -21,11 +20,19 @@ const Register = () => {
 
   const handleRegister = async () => {
     try {
+      // Guarda la preferencia de mantener la sesión iniciada en AsyncStorage
+      await AsyncStorage.setItem(
+        "keepLoggedIn",
+        keepLoggedIn ? "true" : "false",
+      );
+
+      // Luego registra al usuario en Firebase
       await registerUser(email, password, secondPassword);
+
       Alert.alert("Éxito", "Cuenta creada correctamente", [
         {
           text: "OK",
-          onPress: () => router.push("/login"),
+          onPress: () => router.push("/home"),
         },
       ]);
     } catch (error: any) {
