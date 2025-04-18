@@ -8,10 +8,10 @@ import {
   Keyboard,
 } from "react-native";
 import React from "react";
+import { Link } from "expo-router";
+import { MailIcon, LockIcon, EyeIcon } from "components/Icons";
 import Input from "@components/Input";
 import Button from "@components/Button";
-import { MailIcon, LockIcon, EyeIcon } from "@components/Icons";
-import { Link } from "expo-router";
 import CheckBox from "@components/CheckBox";
 
 const Login = () => {
@@ -82,11 +82,13 @@ const Login = () => {
 
             {/* Botón */}
             <View className="items-center ">
-              <Button
-                title="Ingresar"
-                variant="filled"
-                className="w-[60%] self-center"
-              />
+              <Link href="/home" asChild>
+                <Button
+                  title="Ingresar"
+                  variant="filled"
+                  className="w-[60%] self-center"
+                />
+              </Link>
             </View>
 
             {/* Texto inferior */}

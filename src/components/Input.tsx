@@ -1,18 +1,20 @@
-import { TextInput, TextInputProps, View } from "react-native";
+import { TextInput, TextInputProps, View, Pressable } from "react-native";
 import React from "react";
 
 type InputProps = {
   iconLeft?: React.ReactNode;
   iconRight?: React.ReactNode;
+  onIconRightPress?: () => void;
   className?: string;
   inputClassName?: string;
-  placeholderTextColor?: string;
-  borderColor?: string;
+  placeholderTextColor?: string; // color del placeholder
+  borderColor?: string; // color del borde
 } & TextInputProps;
 
 const Input = ({
   iconLeft,
   iconRight,
+  onIconRightPress,
   className = "",
   inputClassName = "",
   placeholderTextColor = "#888",
@@ -30,7 +32,15 @@ const Input = ({
         placeholderTextColor={placeholderTextColor}
         {...props}
       />
-      {iconRight && <View className="ml-2">{iconRight}</View>}
+      {iconRight && (
+        <View className="ml-2">
+          {onIconRightPress ? (
+            <Pressable onPress={onIconRightPress}>{iconRight}</Pressable>
+          ) : (
+            iconRight
+          )}
+        </View>
+      )}
     </View>
   );
 };
