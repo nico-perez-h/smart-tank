@@ -1,42 +1,49 @@
-import { Pressable, Text, View, Alert } from "react-native";
+import { Pressable, Text, View, ActivityIndicator } from "react-native";
 import { useState } from "react";
 import { Link, useRouter } from "expo-router";
 import { MailIcon, LockIcon, EyeIcon, EyeOffIcon } from "@components/Icons";
 import Button from "@components/Button";
-import Input from "components/Input";
-import CheckBox from "@components/CheckBox";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import Input from "@components/Input";
 import { registerUser } from "@services/auth/register";
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secondPassword, setSecondPassword] = useState("");
-  const [keepLoggedIn, setKeepLoggedIn] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showSecondPassword, setShowSecondPassword] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [secondPasswordError, setSecondPasswordError] = useState("");
+  const [generalError, setGeneralError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
   const handleRegister = async () => {
-    try {
-      // Guarda la preferencia de mantener la sesión iniciada en AsyncStorage
-      await AsyncStorage.setItem(
-        "keepLoggedIn",
-        keepLoggedIn ? "true" : "false",
-      );
+    setEmailError("");
+    setPasswordError("");
+    setSecondPasswordError("");
+    setGeneralError("");
 
-      // Luego registra al usuario en Firebase
+    try {
+      setIsLoading(true);
+
       await registerUser(email, password, secondPassword);
 
-      Alert.alert("Éxito", "Cuenta creada correctamente", [
-        {
-          text: "OK",
-          onPress: () => router.push("/home"),
-        },
-      ]);
+      router.replace("/home");
     } catch (error: any) {
-      Alert.alert("Error", error.message);
+      if (error.field === "email") {
+        setEmailError(error.message);
+      } else if (error.field === "password") {
+        setPasswordError(error.message);
+      } else if (error.field === "secondPassword") {
+        setSecondPasswordError(error.message);
+      } else {
+        setGeneralError(error.message || "Ocurrió un error al registrarte.");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -61,6 +68,9 @@ const Register = () => {
           placeholderTextColor="#7B8D93"
           borderColor="#348ac7"
         />
+        {emailError ? (
+          <Text className="text-red-500 text-sm">{emailError}</Text>
+        ) : null}
 
         <Input
           iconLeft={<LockIcon color="#9CD5FF" />}
@@ -83,6 +93,9 @@ const Register = () => {
           autoComplete="password"
           borderColor="#348ac7"
         />
+        {passwordError ? (
+          <Text className="text-red-500 text-sm">{passwordError}</Text>
+        ) : null}
 
         <Input
           iconLeft={<LockIcon color="#9CD5FF" />}
@@ -105,7 +118,23 @@ const Register = () => {
           autoComplete="password"
           borderColor="#348ac7"
         />
+        {secondPasswordError ? (
+          <Text className="text-red-500 text-sm">{secondPasswordError}</Text>
+        ) : null}
       </View>
+
+      {isLoading && (
+        <View className="items-center mt-4">
+          <ActivityIndicator size="small" color="#348ac7" />
+          <Text className="text-sm text-gray-500 mt-2">
+            Creando tu cuenta...
+          </Text>
+        </View>
+      )}
+
+      {!isLoading && generalError ? (
+        <Text className="text-red-500 text-center mt-4">{generalError}</Text>
+      ) : null}
 
       <View className="items-center mt-10">
         <Button
@@ -113,16 +142,7 @@ const Register = () => {
           variant="filled"
           className="w-[60%] self-center"
           onPress={handleRegister}
-        />
-      </View>
-
-      <View className="items-center justify-center">
-        <CheckBox
-          checked={keepLoggedIn}
-          onChange={setKeepLoggedIn}
-          label="Mantener sesión iniciada"
-          className="py-6"
-          color="#348ac7"
+          disabled={isLoading}
         />
       </View>
 
