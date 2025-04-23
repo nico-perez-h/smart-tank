@@ -36,4 +36,4 @@ yarn-error.*
 *.tsbuildinfo
 
 # security
-src/config/configFirebase.ts
+src/config/firebaseConfig.ts
